@@ -27,16 +27,21 @@ class ContributorListSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
-    contributor = serializers.SerializerMethodField(read_only=True)
+    contributors = serializers.SerializerMethodField(read_only=True)
+    issues = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Project
-        fields = ['id', 'title', 'type', 'description', 'contributor']
+        fields = ['id', 'title', 'type', 'description', 'contributors', 'issues']
 
-    def get_contributor(self, instance):
-        project_id =
-        queryset = instance.contributor.filter(project=project_id)
+    def get_contributors(self, instance):
+        queryset = instance.contributors.all()
         serializers = ContributorListSerializer(queryset, many=True)
+        return serializers.data
+
+    def get_issues(self, instance):
+        queryset = instance.issues.all()
+        serializers = IssueDetailSerializer(queryset, many=True)
         return serializers.data
 
 
@@ -57,19 +62,30 @@ class IssueListSerializer(serializers.ModelSerializer):
 
 
 class IssueDetailSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Issue
-        fields = '__all__'
+        fields = ['id', 'title', 'author', 'description', 'tag', 'priority', 'status', 'assignee', 'created_time', 'comments']
 
     def to_representation(self, instance):
         self.fields['author'] = UserSerializer(read_only=True)
         return super().to_representation(instance)
 
+    def get_comments(self, instance):
+        queryset = instance.comments.all()
+        serializers = CommentListSerializer(queryset, many=True)
+        return serializers.data
+
 
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'description', 'created_time']
+        fields = ['id', 'description', 'author', 'created_time']
+
+    def to_representation(self, instance):
+        self.fields['author'] = UserSerializer(read_only=True)
+        return super().to_representation(instance)
 
 
 class CommentDetailSerializer(serializers.ModelSerializer):

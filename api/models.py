@@ -22,8 +22,8 @@ class Contributor(models.Model):
         ('contributor', 'Contributor'),
         ('author', 'Author'),
     )
-    user = models.ForeignKey(User, related_name='contributors', on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='contributors', on_delete=models.CASCADE)
     permission = models.CharField(max_length=15, choices=PERMISSION_CHOICES)
     role = models.CharField(max_length=100)
 
@@ -52,7 +52,7 @@ class Issue(models.Model):
     description = models.TextField(max_length=1000)
     tag = models.CharField(max_length=15, choices=TAG_CHOICES)
     priority = models.CharField(max_length=15, choices=PRIORITY_CHOICES)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='issues', on_delete=models.CASCADE)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_issue', null=True, blank=True)
     assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignee', null=True, blank=True)
@@ -65,7 +65,7 @@ class Issue(models.Model):
 class Comment(models.Model):
     description = models.TextField(max_length=1000)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_comment', null=True, blank=True)
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, null=True, blank=True)
+    issue = models.ForeignKey(Issue, related_name='comments', on_delete=models.CASCADE, null=True, blank=True)
     created_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
