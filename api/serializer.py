@@ -14,10 +14,12 @@ class ProjectListSerializer(serializers.ModelSerializer):
         Contributor.objects.create(user=user, project=project, permission='author', role='author')
         return project
 
+
 class ContributorListSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Contributor
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'permission']
 
     def to_representation(self, instance):
         self.fields['user'] = UserSerializer(read_only=True)
@@ -25,11 +27,17 @@ class ContributorListSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
-    contributor = ContributorListSerializer(many=True, read_only=True)
+    contributor = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Project
         fields = ['id', 'title', 'type', 'description', 'contributor']
+
+    def get_contributor(self, instance):
+        project_id =
+        queryset = instance.contributor.filter(project=project_id)
+        serializers = ContributorListSerializer(queryset, many=True)
+        return serializers.data
 
 
 class ContributorDetailSerializer(serializers.ModelSerializer):
