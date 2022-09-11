@@ -47,11 +47,11 @@ class ContributorViewSet(MultipleSerializerMixin, ModelViewSet):
     queryset = Contributor.objects.all()
 
     def get_queryset(self):
-        project_id = self.kwargs['project_id']
-        return self.queryset.filter(project=project_id)
+        project_pk = self.kwargs['project_pk']
+        return self.queryset.filter(project=project_pk)
 
     def perform_create(self, serializer):
-        serializer.save(project=Project.objects.get(id=self.kwargs['project_id']),
+        serializer.save(project=Project.objects.get(id=self.kwargs['project_pk']),
                         permission='contributor'
                         )
 
@@ -67,11 +67,11 @@ class IssueViewSet(MultipleSerializerMixin, ModelViewSet):
     queryset = Issue.objects.all()
 
     def get_queryset(self):
-        project_id = self.kwargs['project_id']
-        return self.queryset.filter(project=project_id)
+        project_pk = self.kwargs['project_pk']
+        return self.queryset.filter(project=project_pk)
 
     def perform_create(self, serializer):
-        serializer.save(project=Project.objects.get(id=self.kwargs['project_id']),
+        serializer.save(project=Project.objects.get(id=self.kwargs['project_pk']),
                         author=self.request.user
                         )
 
@@ -87,10 +87,10 @@ class CommentViewSet(MultipleSerializerMixin, ModelViewSet):
     queryset = Comment.objects.all()
 
     def get_queryset(self):
-        issue_id = self.kwargs['issue_id']
-        return self.queryset.filter(issue=issue_id)
+        issue_pk = self.kwargs['issue_pk']
+        return self.queryset.filter(issue=issue_pk)
 
     def perform_create(self, serializer):
-        serializer.save(issue=Issue.objects.get(id=self.kwargs['issue_id']),
+        serializer.save(issue=Issue.objects.get(id=self.kwargs['issue_pk']),
                         author=self.request.user
                         )

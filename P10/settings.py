@@ -29,11 +29,10 @@ INSTALLED_APPS = [
     "authentication",
     "api",
     "rest_framework",
-    "rest_framework.authtoken",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
+    'rest_framework.authtoken',
     "dj_rest_auth",
+    "allauth",
+    'allauth.account',
     "dj_rest_auth.registration",
     'drf_spectacular',
 ]
@@ -55,13 +54,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
         ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS':
+        'drf_spectacular.openapi.AutoSchema',
 
 }
-
-
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -155,3 +153,7 @@ AUTH_USER_MODEL = 'authentication.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media/'
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
