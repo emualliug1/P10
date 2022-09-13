@@ -4,7 +4,6 @@ from api.serializer import ContributorListSerializer, ContributorDetailSerialize
 from api.serializer import IssueListSerializer, IssueDetailSerializer
 from api.serializer import CommentListSerializer, CommentDetailSerializer
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 from api.permissions import IsAuthorOrReadOnly
 
 
@@ -29,7 +28,7 @@ class ProjectViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = ProjectListSerializer
     serializer_detail_class = ProjectDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthorOrReadOnly]
     queryset = Project.objects.all()
 
     def get_queryset(self):
@@ -43,7 +42,7 @@ class ContributorViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = ContributorListSerializer
     serializer_detail_class = ContributorDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthorOrReadOnly]
     queryset = Contributor.objects.all()
 
     def get_queryset(self):
