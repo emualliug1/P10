@@ -66,7 +66,7 @@ class ContributorDetailSerializer(serializers.ModelSerializer):
 class IssueListSerializer(RepresentationMixinIssue, serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ['id', 'title','description', 'tag', 'priority', 'status', 'assignee', 'created_time']
+        fields = ['id', 'title', 'description', 'tag', 'priority', 'status', 'assignee', 'created_time']
 
 
 class IssueDetailSerializer(RepresentationMixinIssue, serializers.ModelSerializer):
