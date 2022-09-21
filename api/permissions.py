@@ -30,6 +30,7 @@ class ProjectPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
         liste = ['list', 'retrieve', 'create']
         details = ['update', 'destroy']
+
         if view.action in liste:
             return in_project(request.user, obj)
         elif view.action in details:
@@ -39,25 +40,22 @@ class ProjectPermission(BasePermission):
 class IssuePermission(BasePermission):
     """
     Permission de classe Issue :
-
     Liste :
     Seul les contributeurs authentifier peuvent accéder à cette vue
     et peuvent créer des issues au projet.
-
     Détails :
     Seul l'auteur de l'issue peut la modifier ou la supprimer.
     """
 
     message = "Vous n'avez pas la permission d'effectuer cette action"
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
         liste = ['list', 'retrieve', 'create']
+        details = ['create', 'destroy']
+
         if view.action in liste:
             return in_project(request.user, project)
-
-    def has_object_permission(self, request, view, obj):
-        details = ['create', 'destroy']
         if view.action in details:
             return request.user == obj.author
 
@@ -65,25 +63,22 @@ class IssuePermission(BasePermission):
 class CommentPermission(BasePermission):
     """
     Permission de classe Comment :
-
     Liste :
     Seul les contributeurs authentifier peuvent accéder à cette vue
     et peuvent créer des commentaires d'une issue.
-
     Détails :
     Seul l'auteur du commentaire peut le modifier ou le supprimer.
     """
 
     message = "Vous n'avez pas la permission d'effectuer cette action"
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
         liste = ['list', 'retrieve', 'create']
+        details = ['update', 'destroy']
+
         if view.action in liste:
             return in_project(request.user, project)
-
-    def has_object_permission(self, request, view, obj):
-        details = ['update', 'destroy']
         if view.action in details:
             return request.user == obj.author
 
@@ -91,23 +86,20 @@ class CommentPermission(BasePermission):
 class ContributorPermission(BasePermission):
     """
     Permission de classe Contributor :
-
     Liste :
     Seul les contributeurs peuvent accéder à cette vue.
-
     Détails :
     Seul l'auteur du projet peut ajouter ou supprimer des contributeurs.
     """
 
     message = "Vous n'avez pas la permission d'effectuer cette action"
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
         liste = ['list', 'retrieve']
+        details = ['create', 'destroy']
+
         if view.action in liste:
             return in_project(request.user, project)
-
-    def has_object_permission(self, request, view, obj):
-        details = ['create', 'destroy']
         if view.action in details:
-            return request.user == obj.author
+            return request.user == project.author
