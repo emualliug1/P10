@@ -4,7 +4,7 @@ from api.serializer import ContributorListSerializer, ContributorDetailSerialize
 from api.serializer import IssueListSerializer, IssueDetailSerializer
 from api.serializer import CommentListSerializer, CommentDetailSerializer
 from rest_framework.viewsets import ModelViewSet
-from api.permissions import IsAuthorOrReadOnly
+from .permissions import ProjectPermission, ContributorPermission, IssuePermission, CommentPermission
 
 
 class MultipleSerializerMixin:
@@ -25,15 +25,16 @@ class ProjectViewSet(MultipleSerializerMixin, ModelViewSet):
     """
     ViewSet des projets
     """
-
     serializer_class = ProjectListSerializer
     serializer_detail_class = ProjectDetailSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [ProjectPermission]
     queryset = Project.objects.all()
 
     def get_queryset(self):
         return self.queryset
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 class ContributorViewSet(MultipleSerializerMixin, ModelViewSet):
     """
@@ -42,7 +43,7 @@ class ContributorViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = ContributorListSerializer
     serializer_detail_class = ContributorDetailSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [ContributorPermission]
     queryset = Contributor.objects.all()
 
     def get_queryset(self):
@@ -50,9 +51,7 @@ class ContributorViewSet(MultipleSerializerMixin, ModelViewSet):
         return self.queryset.filter(project=project_pk)
 
     def perform_create(self, serializer):
-        serializer.save(project=Project.objects.get(id=self.kwargs['project_pk']),
-                        permission='contributor'
-                        )
+        serializer.save(project=Project.objects.get(id=self.kwargs['project_pk']))
 
 
 class IssueViewSet(MultipleSerializerMixin, ModelViewSet):
@@ -62,7 +61,7 @@ class IssueViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = IssueListSerializer
     serializer_detail_class = IssueDetailSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [IssuePermission]
     queryset = Issue.objects.all()
 
     def get_queryset(self):
@@ -82,7 +81,7 @@ class CommentViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = CommentListSerializer
     serializer_detail_class = CommentDetailSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [CommentPermission]
     queryset = Comment.objects.all()
 
     def get_queryset(self):

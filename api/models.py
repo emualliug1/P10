@@ -12,6 +12,7 @@ class Project(models.Model):
     title = models.CharField(max_length=100)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
     description = models.TextField(max_length=1000)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -24,8 +25,7 @@ class Contributor(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='contributors', on_delete=models.CASCADE)
-    permission = models.CharField(max_length=15, choices=PERMISSION_CHOICES)
-    role = models.CharField(max_length=100)
+
 
     def __str__(self):
         return self.user.username

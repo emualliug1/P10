@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "dj_rest_auth",
     "allauth",
     'allauth.account',
+    'allauth.socialaccount',
     "dj_rest_auth.registration",
     'drf_spectacular',
 ]
@@ -42,7 +43,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'P10 Open Class Rooms',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 

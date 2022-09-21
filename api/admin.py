@@ -3,11 +3,11 @@ from api.models import Contributor, Comment, Project, Issue
 
 
 class ContributorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'project_id', 'permission')
+    list_display = ('id', 'user', 'project')
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'issue_id', 'description', 'author_id')
+    list_display = ('id', 'issue', 'description', 'author')
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -15,7 +15,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project_id', 'title', 'tag', 'priority')
+    list_display = ('id', 'project', 'title', 'tag', 'priority')
 
 
 admin.site.register(Contributor, ContributorAdmin)

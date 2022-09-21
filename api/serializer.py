@@ -19,7 +19,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         project = Project.objects.create(**validated_data)
         user = self.context['request'].user
-        Contributor.objects.create(user=user, project=project, permission='author', role='author')
+        Contributor.objects.create(user=user, project=project)
         return project
 
 
@@ -85,7 +85,7 @@ class IssueDetailSerializer(RepresentationMixinIssue, serializers.ModelSerialize
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'description','created_time']
+        fields = ['id', 'description', 'created_time']
 
     def to_representation(self, instance):
         self.fields['author'] = UserSerializer(read_only=True)
@@ -100,4 +100,3 @@ class CommentDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         self.fields['author'] = UserSerializer(read_only=True)
         return super().to_representation(instance)
-
