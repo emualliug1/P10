@@ -30,10 +30,8 @@ class ProjectPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
         liste = ['list', 'retrieve', 'create']
         details = ['update', 'destroy']
-
         if view.action in liste:
             return in_project(request.user, obj)
-
         elif view.action in details:
             return request.user == obj.author
 
@@ -54,15 +52,14 @@ class IssuePermission(BasePermission):
 
     def has_permission(self, request, view):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
-        issue = get_object_or_404(Issue, pk=view.kwargs['pk'])
         liste = ['list', 'retrieve', 'create']
-        details = ['create', 'destroy']
-
         if view.action in liste:
             return in_project(request.user, project)
 
+    def has_object_permission(self, request, view, obj):
+        details = ['create', 'destroy']
         if view.action in details:
-            return request.user == issue.author
+            return request.user == obj.author
 
 
 class CommentPermission(BasePermission):
@@ -81,15 +78,14 @@ class CommentPermission(BasePermission):
 
     def has_permission(self, request, view):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
-        comment = get_object_or_404(Comment, pk=view.kwargs['pk'])
         liste = ['list', 'retrieve', 'create']
-        details = ['update', 'destroy']
-
         if view.action in liste:
             return in_project(request.user, project)
 
+    def has_object_permission(self, request, view, obj):
+        details = ['update', 'destroy']
         if view.action in details:
-            return request.user == comment.author
+            return request.user == obj.author
 
 
 class ContributorPermission(BasePermission):
@@ -108,10 +104,10 @@ class ContributorPermission(BasePermission):
     def has_permission(self, request, view):
         project = get_object_or_404(Project, pk=view.kwargs['project_pk'])
         liste = ['list', 'retrieve']
-        details = ['create', 'destroy']
-
         if view.action in liste:
             return in_project(request.user, project)
 
+    def has_object_permission(self, request, view, obj):
+        details = ['create', 'destroy']
         if view.action in details:
-            return request.user == project.author
+            return request.user == obj.author
